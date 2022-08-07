@@ -62,7 +62,7 @@ class AmazonDataset(Dataset):
         filename, tags = self.imlist.iloc[ind, :]
         x = self.load_sample(filename)
         x = self.transforms(x)
-        y = self.label_encoder.transform([tags]).astype(np.int64)
+        y = self.label_encoder.transform([tags]).astype(np.float)#.astype(np.int64)
         return x, y
 
 
