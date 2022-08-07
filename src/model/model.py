@@ -3,9 +3,11 @@ import typing as tp
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
+from torchmetrics import Accuracy, AUROC, F1Score
 from torchvision import models
 
 from src.configs.base_config import Optimizer, LRScheduler, Criterion
+
 
 BACKBONES = tp.Literal[
     'densenet',
@@ -13,6 +15,17 @@ BACKBONES = tp.Literal[
     'convnext',
     'efficientnet'
 ]
+
+
+def calc_metrics(
+        preds: torch.tensor,
+        target: torch.tensor,
+        num_classes: int
+) -> tp.Tuple[torch.tensor, torch.tensor, torch.tensor]:
+    acc = Accuracy()(preds, target.long())
+    auroc = AUROC(num_classes=num_classes)(preds, target.long())
+    f1 = F1Score(num_classes=num_classes)(preds, target.long())
+    return acc, auroc, f1
 
 
 class MultiLabelClassifier(pl.LightningModule):
@@ -25,7 +38,7 @@ class MultiLabelClassifier(pl.LightningModule):
                  img_size: int,
                  optimizer: Optimizer,
                  lr_scheduler: LRScheduler,
-                 criterion: Criterion):
+                 criterion: nn.Module):
         """
         Base feature extractor model that can be combined with different loss functions
 
@@ -44,6 +57,7 @@ class MultiLabelClassifier(pl.LightningModule):
         self.save_hyperparameters()
         self.learning_rate = optimizer.params['lr']
         self.emb_size = emb_size
+        self.num_classes = num_classes
 
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
@@ -118,26 +132,25 @@ class MultiLabelClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         y = y.squeeze(1)
-
         probs = self.forward(x)
         loss = self.criterion(probs, y)
-
-        # acc = calc_accuracy(logits, y)
-
+        acc, auroc, f1_score = calc_metrics(probs, y, num_classes=self.num_classes)
         self.log('train_loss', loss, on_epoch=True, on_step=True)
-        # self.log('train_acc', acc, on_epoch=True, on_step=True)
+        self.log('train_acc', acc, on_epoch=True, on_step=True)
+        self.log('train_auroc', auroc, on_epoch=True, on_step=True)
+        self.log('train_f1', f1_score, on_epoch=True, on_step=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y = y.squeeze(1)
-
         probs = self.forward(x)
         loss = self.criterion(probs, y)
-
-        # acc = calc_accuracy(logits, y)
+        acc, auroc, f1_score = calc_metrics(probs, y, num_classes=self.num_classes)
         self.log('val_loss', loss, on_epoch=True, on_step=True)
-        # self.log('val_acc', acc, on_epoch=True, on_step=True)
+        self.log('val_acc', acc, on_epoch=True, on_step=True)
+        self.log('val_auroc', auroc, on_epoch=True, on_step=True)
+        self.log('val_f1', f1_score, on_epoch=True, on_step=True)
         return loss
 
     def configure_optimizers(self):
