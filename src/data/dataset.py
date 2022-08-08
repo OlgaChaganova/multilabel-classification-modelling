@@ -62,7 +62,7 @@ class AmazonDataset(Dataset):
         filename, tags = self.imlist.iloc[ind, :]
         x = self.load_sample(filename)
         x = self.transforms(x)
-        y = self.label_encoder.transform([tags]).astype(np.float)#.astype(np.int64)
+        y = self.label_encoder.transform([tags]).astype(np.float32)#.astype(np.int64)
         return x, y
 
 
@@ -79,7 +79,6 @@ class AmazonDataModule(pl.LightningDataModule):
                  num_workers: int):
         """
         Data Module for Amazon Competition.
-
         :param imlist_filename: name of csv file with paths to images and labels
         :param root: path to root dir with dataset images
         :param batch_size: batch size
