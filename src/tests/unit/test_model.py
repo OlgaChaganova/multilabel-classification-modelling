@@ -50,7 +50,7 @@ def test_train_loop(
         ],
         fast_dev_run=7,
         log_every_n_steps=2,
-        **config.train.trainer_params
+        **config.train.trainer_params,
     )
 
     if config.train.trainer_params['auto_scale_batch_size'] is not None or \

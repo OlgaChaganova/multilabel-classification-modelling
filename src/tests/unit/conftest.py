@@ -68,7 +68,7 @@ def config():
 
             callbacks=Callbacks(
                 model_checkpoint=pl.callbacks.ModelCheckpoint(
-                    dirpath='home/olga/PycharmProjects/cvr-hw1-modeling/model/experiments/',
+                    dirpath='/home/olga/PycharmProjects/cvr-hw1-modeling/model/experiments/',
                     save_top_k=3,
                     monitor='val_loss',
                     mode='min',
@@ -96,8 +96,7 @@ def config():
             ),
 
             criterion=Criterion(
-                loss=nn.CrossEntropyLoss(label_smoothing=0.2),
-                # loss=nn.BCELoss()
+                loss=nn.BCELoss()
             ),
             ckpt_path=None,
         ),
@@ -123,8 +122,10 @@ def amazon_dm(config):
 
 @pytest.fixture
 def model(config):
-    model = MultiLabelClassifier(optimizer=config.train.optimizer,
-                                 lr_scheduler=config.train.lr_scheduler,
-                                 criterion=config.train.criterion.loss,
-                                 **config.model.params)
+    model = MultiLabelClassifier(
+        optimizer=config.train.optimizer,
+        lr_scheduler=config.train.lr_scheduler,
+        criterion=config.train.criterion.loss,
+        **config.model.params
+    )
     return model
