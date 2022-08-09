@@ -1,6 +1,3 @@
-import os
-
-import numpy as np
 from clearml import Task
 from pytorch_lightning import seed_everything
 from pytorch_lightning import Trainer
@@ -36,19 +33,6 @@ def main(config: Config):
     # clearml task
     task = Task.init(project_name="examples", task_name="PyTorch lightning MNIST example")
 
-    # # save config file for experiment reproducibility
-    # config_filename = os.path.join(os.getcwd(), f'{args.model}', 'config.py')
-    # wandb.save(config_filename)
-    # wandb.log_artifact(config_filename, name='config_artifact', type='config')
-    #
-    # # save label_encoder to wandb
-    # label_encoder_filename = os.path.join(os.getcwd(), f'{args.model}', 'label_encoder_classes.npy')
-    # np.save(label_encoder_filename, datamodule.label_encoder.classes_)
-    # wandb.save(label_encoder_filename)
-    # wandb.log_artifact(label_encoder_filename, name='label_encoder_classes_artifact', type='label_encoder_classes')
-    #
-    # print(f'\nProject {config.info.project_name} was initialized. The name of the run is {config.info.run_name}.')
-
     # trainer
     callbacks = list(config.train.callbacks.__dict__.values())
     callbacks = filter(lambda x: x is not None, callbacks)
@@ -70,8 +54,6 @@ def main(config: Config):
         datamodule=datamodule,
         ckpt_path=config.train.ckpt_path,
     )
-
-    # os.remove(label_encoder_filename)
 
 
 if __name__ == '__main__':
