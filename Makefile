@@ -1,6 +1,7 @@
 .PHONY: install
 install:
 	pip install -r requirements.txt
+	pip install .
 
 
 .PHONY: prepare_data
@@ -13,20 +14,20 @@ prepare_data:
 
 .PHONY: lint
 lint:
-	flake8 src/
+	PYTHONPATH=. flake8 src/
 
 
 .PHONY: run_unit_tests
 run_unit_tests:
 	PYTHONPATH=. pytest src/tests/unit/
 
-
-.PHONY: run_integration_tests
-run_integration_tests:
-	PYTHONPATH=. pytest -s tests/integration/
+#
+# .PHONY: run_integration_tests
+# run_integration_tests:
+# 	PYTHONPATH=. pytest -s tests/integration/
 
 
 .PHONY: run_all_tests
 run_all_tests:
 	make run_unit_tests
-	make run_integration_tests
+# 	make run_integration_tests

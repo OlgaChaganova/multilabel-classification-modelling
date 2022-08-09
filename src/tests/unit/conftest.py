@@ -1,18 +1,19 @@
 import pytest
 import pytorch_lightning as pl
-import torch.nn as nn
+from torch import nn
 
-from src.configs.base_config import Callbacks
-from src.configs.base_config import Common
-from src.configs.base_config import Config
-from src.configs.base_config import Criterion
-from src.configs.base_config import Dataset
-from src.configs.base_config import Info
-from src.configs.base_config import LRScheduler
-from src.configs.base_config import Model
-from src.configs.base_config import Optimizer
-from src.configs.base_config import Train
-
+from src.configs.base_config import (
+    Callbacks,
+    Common,
+    Config,
+    Criterion,
+    Dataset,
+    LRScheduler,
+    Model,
+    Optimizer,
+    Project,
+    Train,
+)
 from src.data.dataset import AmazonDataModule
 from src.model.model import MultiLabelClassifier
 
@@ -20,7 +21,7 @@ from src.model.model import MultiLabelClassifier
 @pytest.fixture
 def config():
     config = Config(
-        info=Info(
+        project=Project(
             project_name='cvr-hw1-modelling',
             task_name='densenet121_ce',
         ),
@@ -42,7 +43,7 @@ def config():
         ),
 
         model=Model(
-            params={
+            model_params={
                 'emb_size': 512,
                 'backbone': 'densenet121',
                 'dropout': 0.5,
@@ -58,7 +59,7 @@ def config():
                 'accelerator': 'auto',
                 'accumulate_grad_batches': 1,
                 'auto_scale_batch_size': None,
-                'gradient_clip_val': 0.0,
+                'gradient_clip_val': 0,
                 'benchmark': True,
                 'precision': 32,
                 'profiler': 'simple',
@@ -79,7 +80,7 @@ def config():
 
             optimizer=Optimizer(
                 name='Adam',
-                params={
+                opt_params={
                     'lr': 0.001,
                     'weight_decay': 0.0001,
                 },
@@ -87,7 +88,7 @@ def config():
 
             lr_scheduler=LRScheduler(
                 name='ReduceLROnPlateau',
-                params={
+                lr_sched_params={
                     'patience': 5,
                     'factor': 0.5,
                     'mode': 'min',
@@ -96,7 +97,7 @@ def config():
             ),
 
             criterion=Criterion(
-                loss=nn.BCELoss()
+                loss=nn.BCELoss(),
             ),
             ckpt_path=None,
         ),
@@ -115,7 +116,7 @@ def amazon_dm(config):
         test_size=config.dataset.test_size,
         train_aug_mode=config.dataset.train_augmentations,
         valid_aug_mode=config.dataset.valid_augmentations,
-        num_workers=config.dataset.num_workers
+        num_workers=config.dataset.num_workers,
     )
     return dm
 
@@ -126,6 +127,6 @@ def model(config):
         optimizer=config.train.optimizer,
         lr_scheduler=config.train.lr_scheduler,
         criterion=config.train.criterion.loss,
-        **config.model.params
+        **config.model.model_params,
     )
     return model

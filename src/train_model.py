@@ -1,21 +1,21 @@
 from clearml import Task
-from pytorch_lightning import seed_everything
-from pytorch_lightning import Trainer
+from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import RichModelSummary
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
 
-from src.configs.config import Config
-from src.configs.config import CONFIG as config
+from src.configs.base_config import Config
+from src.configs.config import CONFIG
 from src.data.dataset import AmazonDataModule
+from src.model.model import MultiLabelClassifier
 
 
 def main(config: Config):
     # model
-    model = config.model.module(
+    model = MultiLabelClassifier(
         optimizer=config.train.optimizer,
         lr_scheduler=config.train.lr_scheduler,
-        criterion=config.train.criterion,
-        **config.model.params
+        criterion=config.train.criterion.loss,
+        **config.model.model_params,
     )
 
     # data module
@@ -31,22 +31,22 @@ def main(config: Config):
     )
 
     # clearml task
-    task = Task.init(project_name="examples", task_name="PyTorch lightning MNIST example")
+    Task.init(project_name=config.project.project_name, task_name=config.project.task_name)
 
     # trainer
+    trainer_params = config.train.trainer_params
     callbacks = list(config.train.callbacks.__dict__.values())
-    callbacks = filter(lambda x: x is not None, callbacks)
+    callbacks = filter(lambda callback: callback is not None, callbacks)
     trainer = Trainer(
         callbacks=[
             TQDMProgressBar(refresh_rate=1),
             RichModelSummary(),
-            *callbacks
+            *callbacks,
         ],
-        **config.train.trainer_params
+        **trainer_params,
     )
 
-    if config.train.trainer_params['auto_scale_batch_size'] is not None or\
-            config.train.trainer_params['auto_lr_find'] is not None:
+    if trainer_params['auto_scale_batch_size'] is not None or trainer_params['auto_lr_find'] is not None:
         trainer.tune(model=model, datamodule=datamodule)
 
     trainer.fit(
@@ -57,5 +57,5 @@ def main(config: Config):
 
 
 if __name__ == '__main__':
-    seed_everything(config.common.seed, workers=True)
-    main(config)
+    seed_everything(CONFIG.common.seed, workers=True)
+    main(CONFIG)

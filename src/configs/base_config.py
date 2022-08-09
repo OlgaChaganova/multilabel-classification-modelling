@@ -2,14 +2,14 @@ import typing as tp
 from dataclasses import dataclass
 
 import pytorch_lightning as pl
-import torch.nn as nn
+from torch import nn
 
-from src.data.augmentations import AUGMENTATION_MODES as augmentations
-from src.data.dataset import IMG_TYPES as img_types
+from src.data.augmentations import AUGMENTATION_MODES
+from src.data.dataset import IMG_TYPES
 
 
 @dataclass
-class Info:
+class Project:
     project_name: str
     task_name: str
 
@@ -25,18 +25,18 @@ class Dataset:
     imlist_filename: str
     num_classes: int = 2000
     num_channels: int = 3
-    img_type: img_types = 'jpg'
+    img_type: IMG_TYPES = 'jpg'
     batch_size: int = 80
     img_size: int = 224
     test_size: float = 0.1
-    train_augmentations: augmentations = 'default'
-    valid_augmentations: augmentations = 'default'
+    train_augmentations: AUGMENTATION_MODES = 'default'
+    valid_augmentations: AUGMENTATION_MODES = 'default'
     num_workers: int = 2
 
 
 @dataclass
 class Model:
-    params: dict
+    model_params: dict
 
 
 @dataclass
@@ -51,13 +51,13 @@ class Callbacks:
 @dataclass
 class Optimizer:
     name: str
-    params: dict
+    opt_params: dict
 
 
 @dataclass
 class LRScheduler:
     name: str
-    params: dict
+    lr_sched_params: dict
 
 
 @dataclass
@@ -77,7 +77,7 @@ class Train:
 
 @dataclass
 class Config:
-    info: Info
+    project: Project
     common: Common
     dataset: Dataset
     model: Model

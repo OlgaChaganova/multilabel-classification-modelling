@@ -1,20 +1,9 @@
 import pytorch_lightning as pl
-import torch.nn as nn
-
-from base_config import Callbacks
-from base_config import Common
-from base_config import Config
-from base_config import Criterion
-from base_config import Dataset
-from base_config import Info
-from base_config import LRScheduler
-from base_config import Model
-from base_config import Optimizer
-from base_config import Train
-
+from base_config import Callbacks, Common, Config, Criterion, Dataset, LRScheduler, Model, Optimizer, Project, Train
+from torch import nn
 
 CONFIG = Config(
-    info=Info(
+    project=Project(
         project_name='cvr-hw1-modelling',
         task_name='densenet121_ce',
     ),
@@ -36,7 +25,7 @@ CONFIG = Config(
     ),
 
     model=Model(
-        params={
+        model_params={
             'emb_size': 512,
             'backbone': 'densenet121',
             'dropout': 0.5,
@@ -52,7 +41,7 @@ CONFIG = Config(
             'accelerator': 'auto',
             'accumulate_grad_batches': 1,
             'auto_scale_batch_size': None,
-            'gradient_clip_val': 0.0,
+            'gradient_clip_val': 0,
             'benchmark': True,
             'precision': 32,
             'profiler': 'simple',
@@ -73,7 +62,7 @@ CONFIG = Config(
 
         optimizer=Optimizer(
             name='Adam',
-            params={
+            opt_params={
                 'lr': 0.001,
                 'weight_decay': 0.0001,
             },
@@ -81,7 +70,7 @@ CONFIG = Config(
 
         lr_scheduler=LRScheduler(
             name='ReduceLROnPlateau',
-            params={
+            lr_sched_params={
                 'patience': 5,
                 'factor': 0.5,
                 'mode': 'min',
