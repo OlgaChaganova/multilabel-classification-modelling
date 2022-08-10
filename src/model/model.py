@@ -2,7 +2,7 @@ import typing as tp
 
 import pytorch_lightning as pl
 import torch
-from torchmetrics import AUROC, Accuracy, F1Score, Precision, Recall
+from torchmetrics import Accuracy, F1Score, Precision, Recall
 from torchvision import models
 
 from src.configs.base_config import LRScheduler, Optimizer
@@ -87,8 +87,9 @@ class MultiLabelClassifier(pl.LightningModule):
 
         # metrics
         self.accuracy = Accuracy()
-        self.auroc = AUROC(num_classes=num_classes)
         self.f1_score = F1Score(num_classes=num_classes)
+        self.precision_score = Precision(num_classes=num_classes)
+        self.recall_score = Recall(num_classes=num_classes)
 
     def forward(self, imgs: torch.tensor):
         features = self.backbone.features(imgs)
@@ -110,11 +111,14 @@ class MultiLabelClassifier(pl.LightningModule):
         self.accuracy(probs, tags.long())
         self.log('train_acc', self.accuracy, on_epoch=True, on_step=True)
 
-        self.auroc(probs, tags.long())
-        self.log('train_auroc', self.auroc, on_epoch=True, on_step=True)
-
         self.f1_score(probs, tags.long())
         self.log('train_f1', self.f1_score, on_epoch=True, on_step=True)
+
+        self.precision_score(probs, tags.long())
+        self.log('train_precision', self.precision_score, on_epoch=True, on_step=True)
+
+        self.recall_score(probs, tags.long())
+        self.log('train_recall_score', self.recall_score, on_epoch=True, on_step=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -128,11 +132,14 @@ class MultiLabelClassifier(pl.LightningModule):
         self.accuracy(probs, tags.long())
         self.log('val_acc', self.accuracy, on_epoch=True, on_step=True)
 
-        self.auroc(probs, tags.long())
-        self.log('val_auroc', self.auroc, on_epoch=True, on_step=True)
-
         self.f1_score(probs, tags.long())
         self.log('val_f1', self.f1_score, on_epoch=True, on_step=True)
+
+        self.precision_score(probs, tags.long())
+        self.log('val_precision', self.precision_score, on_epoch=True, on_step=True)
+
+        self.recall_score(probs, tags.long())
+        self.log('val_recall_score', self.recall_score, on_epoch=True, on_step=True)
         return loss
 
     def configure_optimizers(self):
