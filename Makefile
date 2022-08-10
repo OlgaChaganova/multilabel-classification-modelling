@@ -12,6 +12,10 @@ prepare_data:
 	unzip train_v2.csv.zip && rm train_v2.csv.zip
 
 
+.PHONY: help
+help:
+	python src/train_model.py --help
+
 .PHONY: lint
 lint:
 	PYTHONPATH=. flake8 src/
