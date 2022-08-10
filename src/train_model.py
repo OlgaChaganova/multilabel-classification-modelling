@@ -1,12 +1,21 @@
+import argparse
+import typing as tp
+from runpy import run_path
+
 from clearml import Task
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import RichModelSummary
 from pytorch_lightning.callbacks.progress import TQDMProgressBar
 
 from src.configs.base_config import Config
-from src.configs.config import CONFIG
 from src.data.dataset import AmazonDataModule
 from src.model.model import MultiLabelClassifier
+
+
+def parse() -> tp.Any:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', required=True, type=str, help='Path to experiment config file (*.py)')
+    return parser.parse_args()
 
 
 def main(config: Config):
@@ -20,6 +29,7 @@ def main(config: Config):
 
     # data module
     datamodule = AmazonDataModule(
+        imlist_filename=config.dataset.imlist_filename,
         root=config.dataset.root,
         batch_size=config.dataset.batch_size,
         img_type=config.dataset.img_type,
@@ -57,5 +67,8 @@ def main(config: Config):
 
 
 if __name__ == '__main__':
-    seed_everything(CONFIG.common.seed, workers=True)
-    main(CONFIG)
+    args = parse()
+    config_module = run_path(args.config)
+    exp_config = config_module['CONFIG']
+    seed_everything(exp_config.common.seed, workers=True)
+    main(exp_config)
