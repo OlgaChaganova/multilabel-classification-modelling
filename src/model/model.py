@@ -87,7 +87,7 @@ class MultiLabelClassifier(pl.LightningModule):
 
         # metrics
         self.accuracy = Accuracy()
-        self.auroc = AUROC(num_classes=num_classes)
+        # self.auroc = AUROC(num_classes=num_classes)
         self.f1_score = F1Score(num_classes=num_classes)
 
     def forward(self, imgs: torch.tensor):
@@ -110,8 +110,8 @@ class MultiLabelClassifier(pl.LightningModule):
         self.accuracy(probs, tags.long())
         self.log('train_acc', self.accuracy, on_epoch=True, on_step=True)
 
-        self.auroc(probs, tags.long())
-        self.log('train_auroc', self.auroc, on_epoch=True, on_step=True)
+        # self.auroc(probs, tags.long())
+        # self.log('train_auroc', self.auroc, on_epoch=True, on_step=True)
 
         self.f1_score(probs, tags.long())
         self.log('train_f1', self.f1_score, on_epoch=True, on_step=True)
@@ -128,8 +128,8 @@ class MultiLabelClassifier(pl.LightningModule):
         self.accuracy(probs, tags.long())
         self.log('val_acc', self.accuracy, on_epoch=True, on_step=True)
 
-        self.auroc(probs, tags.long())
-        self.log('val_auroc', self.auroc, on_epoch=True, on_step=True)
+        # self.auroc(probs, tags.long())
+        # self.log('val_auroc', self.auroc, on_epoch=True, on_step=True)
 
         self.f1_score(probs, tags.long())
         self.log('val_f1', self.f1_score, on_epoch=True, on_step=True)
