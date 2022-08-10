@@ -1,11 +1,7 @@
 import pytorch_lightning as pl
 import torch
-from clearml import Task
-from pytorch_lightning import Trainer
-from pytorch_lightning.callbacks import RichModelSummary
-from pytorch_lightning.callbacks.progress import TQDMProgressBar
 
-from src.configs.base_config import Config, LRScheduler, Optimizer
+from src.configs.base_config import LRScheduler, Optimizer
 from src.model.model import MultiLabelClassifier
 
 NUMBER_OF_TAGS = 17
@@ -125,4 +121,3 @@ def test_model_train_step(model: pl.LightningModule):
     probs = model(imgs)
     loss = model.criterion(probs, tags)
     loss.backward()
-
