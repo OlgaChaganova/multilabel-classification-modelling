@@ -52,7 +52,7 @@ class MultiLabelClassifier(pl.LightningModule):
             Loss function for classification.
         """
         super().__init__()
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['criterion'])  # criterion is already saved during checkpointing
         self.learning_rate = optimizer.opt_params['lr']
         self.emb_size = emb_size
         self.num_classes = num_classes
