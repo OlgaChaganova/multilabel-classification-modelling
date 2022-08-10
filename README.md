@@ -3,8 +3,12 @@
 
 ### 1 - Подготовить среду для обучения
 
-- dev-requirements
-- test-requirements
+```angular2html
+conda create --name <venv_name> python=3.10
+source /opt/conda/etc/profile.d/conda.sh 
+conda activate <venv_name>
+conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge
+```
 
 
 ### 2 - Скачать данные с Kaggle (для linux)
