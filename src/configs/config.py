@@ -1,6 +1,21 @@
 import pytorch_lightning as pl
-from base_config import Callbacks, Common, Config, Criterion, Dataset, LRScheduler, Model, Optimizer, Project, Train
 from torch import nn
+
+from src.configs.base_config import (
+    Callbacks,
+    Common,
+    Config,
+    Criterion,
+    Dataset,
+    LRScheduler,
+    Model,
+    Optimizer,
+    Project,
+    Train,
+)
+
+NUM_CLASSES = 17
+IMG_SIZE = 256
 
 CONFIG = Config(
     project=Project(
@@ -15,9 +30,9 @@ CONFIG = Config(
         imlist_filename='/home/olga/PycharmProjects/cvr-hw1-modeling/raw_data/train_v2.csv',
         test_size=0.1,
         img_type='jpg',
-        img_size=224,
+        img_size=IMG_SIZE,
         num_channels=3,
-        num_classes=2000,
+        num_classes=NUM_CLASSES,
         batch_size=64,
         num_workers=2,
         train_augmentations='default',
@@ -29,9 +44,9 @@ CONFIG = Config(
             'emb_size': 512,
             'backbone': 'densenet121',
             'dropout': 0.5,
-            'num_classes': 2000,
+            'num_classes': NUM_CLASSES,
             'num_channels': 3,
-            'img_size': 224,
+            'img_size': IMG_SIZE,
         },
     ),
 
