@@ -33,8 +33,8 @@ CONFIG = Config(
         img_size=IMG_SIZE,
         num_channels=3,
         num_classes=NUM_CLASSES,
-        batch_size=64,
-        num_workers=2,
+        batch_size=56,
+        num_workers=6,
         train_augmentations='default',
         valid_augmentations='default',
     ),
@@ -54,7 +54,7 @@ CONFIG = Config(
         trainer_params={
             'devices': 1,
             'accelerator': 'auto',
-            'accumulate_grad_batches': 1,
+            'accumulate_grad_batches': 4,
             'auto_scale_batch_size': None,
             'gradient_clip_val': 0,
             'benchmark': True,
@@ -66,7 +66,7 @@ CONFIG = Config(
 
         callbacks=Callbacks(
             model_checkpoint=pl.callbacks.ModelCheckpoint(
-                dirpath='/content/face-research/src/models/feature_extractor/experiments/',
+                dirpath='../model/experiments/',
                 save_top_k=3,
                 monitor='val_loss',
                 mode='min',
@@ -86,8 +86,8 @@ CONFIG = Config(
         lr_scheduler=LRScheduler(
             name='ReduceLROnPlateau',
             lr_sched_params={
-                'patience': 5,
-                'factor': 0.5,
+                'patience': 3,
+                'factor': 0.1,
                 'mode': 'min',
                 'min_lr': 0.00001,
             },
