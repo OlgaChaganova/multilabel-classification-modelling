@@ -18,7 +18,7 @@ def parse() -> tp.Any:
     return parser.parse_args()
 
 
-def main(config: Config):
+def main(args: tp.Any, config: Config):
     # model
     model = MultiLabelClassifier(
         optimizer=config.train.optimizer,
@@ -41,7 +41,10 @@ def main(config: Config):
     )
 
     # clearml task
-    Task.init(project_name=config.project.project_name, task_name=config.project.task_name)
+    task = Task.init(project_name=config.project.project_name, task_name=config.project.task_name)
+
+    # save config.py for reproducibility
+    task.upload_artifact('exp_config', artifact_object=args.config, delete_after_upload=False)
 
     # trainer
     trainer_params = config.train.trainer_params
@@ -71,4 +74,4 @@ if __name__ == '__main__':
     config_module = run_path(args.config)
     exp_config = config_module['CONFIG']
     seed_everything(exp_config.common.seed, workers=True)
-    main(exp_config)
+    main(args, exp_config)
