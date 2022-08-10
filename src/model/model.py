@@ -15,18 +15,6 @@ BACKBONES = tp.Literal[
 ]
 
 
-def calc_metrics(
-    preds: torch.tensor,
-    target: torch.tensor,
-    num_classes: int,
-) -> tp.Tuple[torch.tensor, torch.tensor, torch.tensor]:
-
-    acc = Accuracy()(preds, target.long())
-    auroc = AUROC(num_classes=num_classes)(preds, target.long())
-    f1 = F1Score(num_classes=num_classes)(preds, target.long())
-    return acc, auroc, f1
-
-
 class MultiLabelClassifier(pl.LightningModule):
     def __init__(
         self,
@@ -97,6 +85,11 @@ class MultiLabelClassifier(pl.LightningModule):
 
         self.sigmoid = torch.nn.Sigmoid()
 
+        # metrics
+        self.accuracy = Accuracy()
+        self.auroc = AUROC(num_classes=num_classes)
+        self.f1_score = F1Score(num_classes=num_classes)
+
     def forward(self, imgs: torch.tensor):
         features = self.backbone.features(imgs)
         features = self.normalize_conv(features)
@@ -110,24 +103,36 @@ class MultiLabelClassifier(pl.LightningModule):
         imgs, tags = batch
         tags = tags.squeeze(1)
         probs = self.forward(imgs)
+
         loss = self.criterion(probs, tags)
-        acc, auroc, f1_score = calc_metrics(probs, tags, num_classes=self.num_classes)
         self.log('train_loss', loss, on_epoch=True, on_step=True)
-        self.log('train_acc', acc, on_epoch=True, on_step=True)
-        self.log('train_auroc', auroc, on_epoch=True, on_step=True)
-        self.log('train_f1', f1_score, on_epoch=True, on_step=True)
+
+        self.accuracy(probs, tags.long())
+        self.log('train_acc', self.accuracy, on_epoch=True, on_step=True)
+
+        self.auroc(probs, tags.long())
+        self.log('train_auroc', self.auroc, on_epoch=True, on_step=True)
+
+        self.f1_score(probs, tags.long())
+        self.log('train_f1', self.f1_score, on_epoch=True, on_step=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         imgs, tags = batch
         tags = tags.squeeze(1)
         probs = self.forward(imgs)
+
         loss = self.criterion(probs, tags)
-        acc, auroc, f1_score = calc_metrics(probs, tags, num_classes=self.num_classes)
         self.log('val_loss', loss, on_epoch=True, on_step=True)
-        self.log('val_acc', acc, on_epoch=True, on_step=True)
-        self.log('val_auroc', auroc, on_epoch=True, on_step=True)
-        self.log('val_f1', f1_score, on_epoch=True, on_step=True)
+
+        self.accuracy(probs, tags.long())
+        self.log('val_acc', self.accuracy, on_epoch=True, on_step=True)
+
+        self.auroc(probs, tags.long())
+        self.log('val_auroc', self.auroc, on_epoch=True, on_step=True)
+
+        self.f1_score(probs, tags.long())
+        self.log('val_f1', self.f1_score, on_epoch=True, on_step=True)
         return loss
 
     def configure_optimizers(self):
