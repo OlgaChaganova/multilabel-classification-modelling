@@ -110,12 +110,7 @@ def test_build_model_efficientnet():
                 'lr': 0.001,
             },
         ),
-        lr_scheduler=LRScheduler(
-            name='StepLR',
-            lr_sched_params={
-                'step_size': 10,
-            },
-        ),
+        lr_scheduler=None,
         criterion=torch.nn.CrossEntropyLoss(),
     )
     imgs = torch.randn([batch_size, num_channels, img_size, img_size])
@@ -131,35 +126,3 @@ def test_model_train_step(model: pl.LightningModule):
     loss = model.criterion(probs, tags)
     loss.backward()
 
-
-def test_train_loop(
-    config: Config,
-    model: pl.LightningModule,
-    amazon_dm: pl.LightningDataModule,
-):
-    # task in ClearML
-    Task.init(project_name=config.project.project_name, task_name=config.project.task_name)
-
-    # trainer
-    trainer_params = config.train.trainer_params
-    callbacks = list(config.train.callbacks.__dict__.values())
-    callbacks = filter(lambda callback: callback is not None, callbacks)
-    trainer = Trainer(
-        callbacks=[
-            TQDMProgressBar(refresh_rate=1),
-            RichModelSummary(),
-            *callbacks,
-        ],
-        fast_dev_run=7,
-        log_every_n_steps=2,
-        **config.train.trainer_params,
-    )
-
-    if trainer_params['auto_scale_batch_size'] is not None or trainer_params['auto_lr_find'] is not None:
-        trainer.tune(model=model, datamodule=amazon_dm)
-
-    trainer.fit(
-        model=model,
-        datamodule=amazon_dm,
-        ckpt_path=config.train.ckpt_path,
-    )
