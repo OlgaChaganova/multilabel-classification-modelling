@@ -2,7 +2,6 @@
 install:
 	pip install -r requirements.txt
 	pip install .
-	clearml-init
 	pip install -U rich
 
 
