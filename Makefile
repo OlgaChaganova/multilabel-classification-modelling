@@ -26,14 +26,3 @@ lint:
 .PHONY: run_unit_tests
 run_unit_tests:
 	PYTHONPATH=. pytest src/tests/unit/
-
-#
-# .PHONY: run_integration_tests
-# run_integration_tests:
-# 	PYTHONPATH=. pytest -s tests/integration/
-
-
-.PHONY: run_all_tests
-run_all_tests:
-	make run_unit_tests
-# 	make run_integration_tests
