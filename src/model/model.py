@@ -91,7 +91,7 @@ class MultiLabelClassifier(pl.LightningModule):
         self.precision_score = Precision(num_classes=num_classes)
         self.recall_score = Recall(num_classes=num_classes)
 
-    def forward(self, imgs: torch.tensor):
+    def forward(self, imgs):
         features = self.backbone.features(imgs)
         features = self.normalize_conv(features)
         features = features.contiguous() .view(features.size(0), -1)
