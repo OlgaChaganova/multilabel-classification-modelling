@@ -3,6 +3,8 @@
 
 ## 1 - Подготовить среду для обучения
 
+1. Создать виртуальное окружение (можно любым удобным способом, но нужен python 3.10)
+
 ```shell
 conda create --name <venv_name> python=3.10
 conda activate <venv_name>
@@ -12,6 +14,12 @@ conda activate <venv_name>
 
 ```shell
 source /opt/conda/etc/profile.d/conda.sh
+```
+
+2. Установить необходимые зависимости: 
+
+```shell
+make install
 ```
 
 ## 2 - Скачать данные с Kaggle
@@ -24,18 +32,19 @@ source /opt/conda/etc/profile.d/conda.sh
 в папку `raw_data`.
 
 
-4. Выполнить в терминале `make prepare_data`, чтобы распаковать архив и удалить ненужные файлы.
+4. Распаковать архив и удалить ненужные файлы:
+
+```
+make prepare_data
+```
 
 
 ## 3 - Запустить обучение
 
-1. Создать виртуальное окружение и выполнить `make install` для установки всех необходимых зависимостей.
+1. Настроить конфигурацию эксперимента в файле `src/configs/config.py`;
 
 
-2. Настроить конфигурацию эксперимента в файле `src/configs/config.py`;
-
-
-3. Запустить обучение:
+2. Запустить обучение:
 
 ```shell
 cd src
@@ -79,7 +88,8 @@ dvc remote modify dvc_remote_staging keyfile /home/.ssh/id_rsa
 ```
 
 Модели скомпилированы в формат `TorchScript`. Для их инференса достаточно загрузить веса (размеры входных тензоров должны
-совпадать с размерами тензоров, которые использовались при обучении -- параметр `config.dataset.img_size`):
+совпадать с размерами тензоров, которые использовались при обучении:
+`[batch_size, config.dataset.num_channels, config.dataset.img_size, config.dataset.img_size]`):
 
 ```python
 ...
