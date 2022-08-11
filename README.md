@@ -20,10 +20,11 @@ source /opt/conda/etc/profile.d/conda.sh
 и принять все правила;
 
 
-2. На вкладке Data скачать файлы `train-jpg.tar.7z`, `test-jpg.tar.7z`, `train_v2.csv`
+2. На вкладке Data скачать файлы `train-jpg.tar.7z`, `test-jpg.tar.7z`, `train_v2.csv` и положить их в корень репозитория,
+в папку `raw_data`.
 
 
-4. Выполнить в терминале `make prepare_data`, чтобы распаковать архив и удалить ненужные файлы 
+4. Выполнить в терминале `make prepare_data`, чтобы распаковать архив и удалить ненужные файлы.
 
 
 ### 3 - Запустить обучение
@@ -40,4 +41,6 @@ python train_model.py --config configs/config.py
 
 ### 4 - Ссылка на эксперимент
 
-[Здесь](https://app.clear.ml/projects/be78acda989c46ea965eab2c46b0e170/experiments/58a688c06e414d479c3efacc592cff31/output/execution)
+[DenseNet121](https://app.clear.ml/projects/be78acda989c46ea965eab2c46b0e170/experiments/58a688c06e414d479c3efacc592cff31/output/execution)
+
+[MobileNet_v3](https://app.clear.ml/projects/be78acda989c46ea965eab2c46b0e170/experiments/e60ede3ea8c441aaa6dd84902a96fd1f/output/execution)
