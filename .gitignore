@@ -168,7 +168,8 @@ cython_debug/
 raw_data/
 !raw_data/*.dvc
 
-
 .idea/
 
 lightning_logs/
+
+*.ckpt
