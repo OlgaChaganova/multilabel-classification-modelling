@@ -1,0 +1,4 @@
+outs:
+- md5: 630a7c4ceb4eb845f6a095b1f9f2f674
+  size: 289907099
+  path: densenet121_ce.ckpt
