@@ -20,14 +20,14 @@ IMG_SIZE = 256
 CONFIG = Config(
     project=Project(
         project_name='cvr-hw1-modelling',
-        task_name='densenet121_ce',
+        task_name='mobilenet_v3_small_ce',
     ),
 
     common=Common(seed=8),
 
     dataset=Dataset(
-        root='/home/olga/PycharmProjects/cvr-hw1-modeling/raw_data/train-jpg',
-        imlist_filename='/home/olga/PycharmProjects/cvr-hw1-modeling/raw_data/train_v2.csv',
+        root='/root/cvr-hw1-modeling/raw_data/train-jpg',
+        imlist_filename='/root/cvr-hw1-modeling/raw_data/train_v2.csv',
         test_size=0.1,
         img_type='jpg',
         img_size=IMG_SIZE,
@@ -41,8 +41,8 @@ CONFIG = Config(
 
     model=Model(
         model_params={
-            'emb_size': 512,
-            'backbone': 'densenet121',
+            'emb_size': 256,
+            'backbone': 'mobilenet_v3_small',
             'dropout': 0.5,
             'num_classes': NUM_CLASSES,
             'num_channels': 3,
@@ -66,7 +66,7 @@ CONFIG = Config(
 
         callbacks=Callbacks(
             model_checkpoint=pl.callbacks.ModelCheckpoint(
-                dirpath='../model/experiments/',
+                dirpath='/root/cvr-hw1-modeling/checkpoints/mobilenet_v3_small_ce/',
                 save_top_k=3,
                 monitor='val_loss',
                 mode='min',
