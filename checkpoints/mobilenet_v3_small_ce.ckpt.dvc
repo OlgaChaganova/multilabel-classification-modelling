@@ -1,0 +1,4 @@
+outs:
+- md5: d0b0eb65d73d5c479673fd33c72e1620
+  size: 131183819
+  path: mobilenet_v3_small_ce.ckpt
