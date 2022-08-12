@@ -1,7 +1,9 @@
 import argparse
+import os
 import typing as tp
 from runpy import run_path
 
+import numpy as np
 from clearml import Task
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import RichModelSummary
@@ -45,6 +47,11 @@ def main(args: tp.Any, config: Config):
 
     # save config.py for reproducibility
     task.upload_artifact('exp_config', artifact_object=args.config, delete_after_upload=False)
+
+    # save label_encoder classes for future inference
+    label_encoder_filename = os.path.join(os.getcwd(), 'label_encoder_classes.npy')
+    np.save(label_encoder_filename, datamodule.label_encoder.classes_)
+    task.upload_artifact('label_encoder_classes', artifact_object=label_encoder_filename, delete_after_upload=False)
 
     # trainer
     trainer_params = config.train.trainer_params
