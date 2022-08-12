@@ -18,6 +18,10 @@ from src.data.dataset import AmazonDataModule
 from src.model.model import MultiLabelClassifier
 
 
+NUM_CLASSES = 17
+IMG_SIZE = 256
+
+
 @pytest.fixture
 def config():
     config = Config(
@@ -29,13 +33,13 @@ def config():
         common=Common(seed=8),
 
         dataset=Dataset(
-            root='/home/olga/PycharmProjects/cvr-hw1-modeling/raw_data/train-jpg',
-            imlist_filename='/home/olga/PycharmProjects/cvr-hw1-modeling/raw_data/train_v2.csv',
+            root='tests/supplementary/amazon_space_dataset/images/',
+            imlist_filename='tests/supplementary/amazon_space_dataset/train_v2.csv',
             test_size=0.1,
             img_type='jpg',
-            img_size=224,
+            img_size=IMG_SIZE,
             num_channels=3,
-            num_classes=2000,
+            num_classes=NUM_CLASSES,
             batch_size=2,
             num_workers=2,
             train_augmentations='default',
@@ -47,9 +51,9 @@ def config():
                 'emb_size': 512,
                 'backbone': 'densenet121',
                 'dropout': 0.5,
-                'num_classes': 17,
+                'num_classes': NUM_CLASSES,
                 'num_channels': 3,
-                'img_size': 224,
+                'img_size': IMG_SIZE,
             },
         ),
 
@@ -69,8 +73,8 @@ def config():
 
             callbacks=Callbacks(
                 model_checkpoint=pl.callbacks.ModelCheckpoint(
-                    dirpath='/home/olga/PycharmProjects/cvr-hw1-modeling/model/experiments/',
-                    save_top_k=3,
+                    dirpath=None,
+                    save_top_k=1,
                     monitor='val_loss',
                     mode='min',
                 ),

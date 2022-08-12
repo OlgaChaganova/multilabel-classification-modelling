@@ -24,4 +24,20 @@ lint:
 
 .PHONY: run_unit_tests
 run_unit_tests:
-	PYTHONPATH=. pytest src/tests/unit/
+	PYTHONPATH=. pytest tests/unit/
+
+
+.PHONY: run_integration_tests
+run_integration_tests:
+	PYTHONPATH=. pytest tests/integration/
+
+
+.PHONY: run_tests
+run_tests:
+	make run_unit_tests
+	make run_integration_tests
+
+
+.PHONY: generate_coverage_report
+generate_coverage_report:
+	PYTHONPATH=. pytest --cov=src --cov-report html  tests/

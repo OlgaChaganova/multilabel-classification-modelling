@@ -1,8 +1,9 @@
 import pytorch_lightning as pl
 import torch
 
-from src.configs.base_config import LRScheduler, Optimizer
+from src.configs.base_config import Config, LRScheduler, Optimizer
 from src.model.model import MultiLabelClassifier
+
 
 NUMBER_OF_TAGS = 17
 
@@ -114,8 +115,8 @@ def test_build_model_efficientnet():
     assert output.shape == (batch_size, NUMBER_OF_TAGS)
 
 
-def test_model_train_step(model: pl.LightningModule):
-    batch_size, num_channels, img_size = 10, 3, 224
+def test_model_train_step(model: pl.LightningModule, config: Config):
+    batch_size, num_channels, img_size = 10, config.dataset.num_channels, config.dataset.img_size
     imgs = torch.randn([batch_size, num_channels, img_size, img_size])
     tags = torch.randn([batch_size, NUMBER_OF_TAGS])
     probs = model(imgs)
