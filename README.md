@@ -34,7 +34,7 @@ make install
 
 4. Распаковать архив и удалить ненужные файлы:
 
-```
+```shell
 make prepare_data
 ```
 
@@ -97,3 +97,12 @@ model = torch.jit.load(model_path, map_location='cpu')
 probabilities = model(imgs)
 ```
 
+Также в папке `weights` лежит .npy файл с классами label encoder. Инициализировать его можно следующим образом:
+
+```python
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+
+encoder = LabelEncoder()
+encoder.classes_ = np.load('weights/label_encoder_classes.npy')
+```
