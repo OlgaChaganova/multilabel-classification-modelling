@@ -48,6 +48,8 @@ CONFIG = Config(
             'num_channels': 3,
             'img_size': IMG_SIZE,
         },
+        threshold=0.5,
+
     ),
 
     train=Train(

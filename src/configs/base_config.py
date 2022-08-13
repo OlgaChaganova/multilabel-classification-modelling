@@ -37,6 +37,7 @@ class Dataset:
 @dataclass
 class Model:
     model_params: dict
+    threshold: float
 
 
 @dataclass
