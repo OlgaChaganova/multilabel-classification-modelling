@@ -4,10 +4,12 @@ import os
 import typing as tp
 from runpy import run_path
 
+import numpy as np
 import torch
 
 from src.configs.base_config import Config
 from src.model.model import MultiLabelClassifier
+from src.model.model_wrapper import ModelWrapper
 
 
 def parse() -> tp.Any:
@@ -19,7 +21,7 @@ def parse() -> tp.Any:
         '--ckpt_path', required=True, type=str, help='Path to experiment checkpoint (*.ckpt)',
     )
     parser.add_argument(
-        '--path_to_save', type=str, default='../weights', help='Path to directory where .pt model will be saved',
+        '--dir_to_save', type=str, default='weights/', help='Path to directory where .pt model will be saved',
     )
     parser.add_argument(
         '--check', action='store_true', help='Check correctness of converting by shape of output',
@@ -29,9 +31,21 @@ def parse() -> tp.Any:
 
 def convert_from_checkpoint(args: tp.Any, config: Config):
     model = MultiLabelClassifier.load_from_checkpoint(args.ckpt_path, criterion=config.train.criterion.loss)
+
+    classes = np.load(config.dataset.path_label_encoder_classes, allow_pickle=True)
+    classes = list(classes)
+
+    wrapped_model = ModelWrapper(
+        model=model,
+        classes=classes,
+        img_size=config.dataset.img_size,
+        threshold=config.model.threshold,
+    )
+
     model_name = os.path.split(args.ckpt_path)[-1].replace('ckpt', 'pt')
-    model_path = os.path.join(args.path_to_save, model_name)
-    model.to_torchscript(file_path=model_path)
+    model_path = os.path.join(args.dir_to_save, model_name)
+
+    wrapped_model.to_torchscript(file_path=model_path)
 
     if os.path.isfile(model_path):
         logging.info(f'Model was successfully saved. File name: {model_path}')
