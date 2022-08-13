@@ -101,8 +101,8 @@ probabilities = model(imgs)
 
 ```python
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MultiLabelBinarizer
 
-encoder = LabelEncoder()
+encoder = **LabelEncoder**()
 encoder.classes_ = np.load('weights/label_encoder_classes.npy')
 ```
