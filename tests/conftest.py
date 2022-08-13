@@ -44,6 +44,7 @@ def config():
             num_workers=2,
             train_augmentations='default',
             valid_augmentations='default',
+            path_label_encoder_classes='./weights/label_encoder_classes.npy',
         ),
 
         model=Model(
