@@ -21,17 +21,18 @@ class Common:
 
 @dataclass
 class Dataset:
-    root: str
-    imlist_filename: str
-    num_classes: int = 2000
-    num_channels: int = 3
-    img_type: IMG_TYPES = 'jpg'
-    batch_size: int = 80
-    img_size: int = 224
-    test_size: float = 0.1
-    train_augmentations: AUGMENTATION_MODES = 'default'
-    valid_augmentations: AUGMENTATION_MODES = 'default'
-    num_workers: int = 2
+    root: str  # path to root directory with images
+    imlist_filename: str  # path to image list with paths to images and their labels
+    num_classes: int  # number of classes in dataset
+    num_channels: int  # number of channels of images _after_ transforming
+    img_type: IMG_TYPES  # image file extension
+    batch_size: int
+    img_size: int  # size of images _after_ transforming
+    test_size: float  # share of validation dataset
+    train_augmentations: AUGMENTATION_MODES
+    valid_augmentations: AUGMENTATION_MODES
+    num_workers: int
+    path_label_encoder_classes: str  # path to file where label encoder classes will be stored
 
 
 @dataclass

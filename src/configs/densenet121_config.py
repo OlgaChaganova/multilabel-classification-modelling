@@ -37,6 +37,7 @@ CONFIG = Config(
         num_workers=6,
         train_augmentations='default',
         valid_augmentations='default',
+        path_label_encoder_classes='./weights/label_encoder_classes.npy',
     ),
 
     model=Model(
@@ -49,7 +50,6 @@ CONFIG = Config(
             'img_size': IMG_SIZE,
         },
         threshold=0.5,
-
     ),
 
     train=Train(
